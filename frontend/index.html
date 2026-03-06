@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Cloud Optimization Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:30px;
+}
+
+h1{
+margin-bottom:10px;
+}
+
+button{
+padding:15px 30px;
+font-size:18px;
+background:#22c55e;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.cards{
+display:flex;
+justify-content:center;
+gap:30px;
+margin-top:30px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+width:150px;
+}
+
+.charts{
+display:flex;
+justify-content:center;
+gap:40px;
+margin-top:40px;
+flex-wrap:wrap;
+}
+
+.chart-container{
+width:400px;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+
+.log{
+margin-top:40px;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+width:600px;
+margin-left:auto;
+margin-right:auto;
+text-align:left;
+}
+.pipeline{
+display:flex;
+justify-content:center;
+gap:20px;
+margin:30px;
+}
+
+.agent{
+padding:10px 20px;
+background:#1e293b;
+border-radius:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>☁ Cloud Resource Optimization System</h1>
+<p>Multi-Agent AI Cloud Scaling</p>
+
+<button onclick="runSystem()">Run Optimization</button>
+
+<div class="cards">
+
+<div class="card">
+<h3>Scale Up</h3>
+<p id="scaleUp">0</p>
+</div>
+
+<div class="card">
+<h3>Scale Down</h3>
+<p id="scaleDown">0</p>
+</div>
+
+<div class="card">
+<h3>Maintain</h3>
+<p id="maintain">0</p>
+</div>
+
+</div>
+
+<div class="charts">
+
+<div class="chart-container">
+<h3>Scaling Decisions</h3>
+<canvas id="decisionChart"></canvas>
+</div>
+
+<div class="chart-container">
+<h3>CPU Usage Trend</h3>
+<canvas id="cpuChart"></canvas>
+</div>
+
+</div>
+<div class="pipeline">
+
+<div class="agent">Monitoring</div>
+<div class="agent">Analysis</div>
+<div class="agent">Prediction</div>
+<div class="agent">Performance</div>
+<div class="agent">Cost</div>
+<div class="agent">Decision</div>
+
+</div>
+
+
+<div class="log" id="agentLog">
+<b>Agent Decisions:</b>
+<ul id="logList"></ul>
+</div>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>

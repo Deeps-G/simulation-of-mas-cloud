@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud MAS · Live Simulation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --sidebar-bg: #0f172a;
+      --sidebar-text: rgba(255,255,255,0.9);
+      --sidebar-active: #0ea5e9;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-violet: #8b5cf6;
+      --card-bg: #1e293b;
+      --card-border: rgba(255,255,255,0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .sidebar-header {
+      padding: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+    }
+    .sidebar-header i { color: var(--accent-cyan); }
+    .nav { flex: 1; padding: 12px 8px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      margin-bottom: 2px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .nav-item.active { background: var(--sidebar-active); color: #fff; }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .topbar {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar h1 { font-size: 1.25rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 10px; }
+    .topbar h1 i { color: var(--accent-cyan); }
+    .sim-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), #0891b2);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); }
+    .btn-primary.running { background: linear-gradient(135deg, var(--accent-rose), #e11d48); animation: pulse-btn 1.5s ease-in-out infinite; }
+    .btn-ghost { background: rgba(255,255,255,0.08); color: #e2e8f0; }
+    .btn-ghost:hover { background: rgba(255,255,255,0.12); }
+    @keyframes pulse-btn { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+    .speed-select {
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: #e2e8f0;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .content { padding: 20px 24px; flex: 1; display: flex; flex-direction: column; gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-1-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title { font-weight: 600; font-size: 14px; color: #f8fafc; display: flex; align-items: center; gap: 8px; }
+    .card-title i { color: var(--accent-cyan); opacity: 0.9; }
+    .card-body { padding: 18px; flex: 1; min-height: 0; }
+    /* Cloud network */
+    .network-wrap { position: relative; height: 220px; background: radial-gradient(ellipse at center, rgba(6, 182, 212, 0.06) 0%, transparent 70%); }
+    #networkCanvas { width: 100%; height: 100%; display: block; }
+    /* Server scaling strip */
+    .servers-wrap { display: flex; justify-content: center; align-items: flex-end; gap: 12px; height: 140px; padding: 20px; }
+    .server-node {
+      width: 48px;
+      min-height: 24px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, var(--accent-emerald), #059669);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      transition: height 0.3s ease, background 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    .server-node.medium { background: linear-gradient(180deg, var(--accent-amber), #d97706); box-shadow: 0 0 20px rgba(245, 158, 11, 0.3); }
+    .server-node.high { background: linear-gradient(180deg, var(--accent-rose), #e11d48); box-shadow: 0 0 24px rgba(244, 63, 94, 0.5); }
+    .server-node .label { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; color: #94a3b8; white-space: nowrap; }
+    .server-node .cpu-pct { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.95); text-shadow: 0 0 4px rgba(0,0,0,0.5); }
+    /* Traffic chart */
+    .traffic-wrap .y-label { position: absolute; left: 8px; top: 8px; font-size: 10px; color: #64748b; z-index: 1; }
+    /* Pipeline output + log */
+    .pipeline-output { margin-top: 12px; padding: 10px 14px; background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); border: 1px solid var(--card-border); font-family: Consolas, Monaco, monospace; font-size: 12px; color: var(--accent-cyan); min-height: 36px; }
+    .pipeline-output .agent-name { color: var(--accent-amber); margin-right: 8px; }
+    .agent-log-wrap { margin-top: 12px; max-height: 100px; overflow-y: auto; background: #0f172a; border-radius: var(--radius-sm); border: 1px solid var(--card-border); padding: 8px; font-family: Consolas, Monaco, monospace; font-size: 11px; color: #94a3b8; }
+    .agent-log-wrap .log-line { padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .agent-log-wrap .log-line .ts { color: #64748b; margin-right: 8px; }
+    /* Agent pipeline */
+    .pipeline-wrap { padding: 16px; }
+    .pipeline-track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      height: 56px;
+    }
+    .pipeline-track::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--card-border), rgba(6, 182, 212, 0.3), var(--card-border));
+      border-radius: 2px;
+      z-index: 0;
+    }
+    .pipeline-agent {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #64748b;
+      position: relative;
+      z-index: 1;
+      transition: all 0.3s ease;
+    }
+    .pipeline-agent.active {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 24px rgba(6, 182, 212, 0.4);
+      transform: scale(1.08);
+    }
+    .pipeline-agent.done { border-color: var(--accent-emerald); color: var(--accent-emerald); }
+    .pipeline-agent .name { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 10px; color: #94a3b8; white-space: nowrap; }
+    /* Traffic spikes */
+    .traffic-wrap { height: 160px; position: relative; }
+    #trafficCanvas { width: 100%; height: 100%; display: block; }
+    /* Stats strip */
+    .stats-strip { display: flex; gap: 16px; flex-wrap: wrap; }
+    .stat-box {
+      flex: 1;
+      min-width: 120px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+    }
+    .stat-box .value { font-size: 22px; font-weight: 700; color: #fff; }
+    .stat-box .label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+    .stat-box .value.cyan { color: var(--accent-cyan); }
+    .stat-box .value.green { color: var(--accent-emerald); }
+    .stat-box .value.amber { color: var(--accent-amber); }
+    .stat-box .value.rose { color: var(--accent-rose); }
+    @media (max-width: 900px) {
+      .grid-2, .grid-1-2 { grid-template-columns: 1fr; }
+      .sidebar { width: 64px; }
+      .sidebar-header span, .nav-item span { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <i class="fas fa-cloud"></i>
+      <span>Cloud MAS</span>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-item"><i class="fas fa-th-large"></i><span>Dashboard</span></a>
+      <div class="nav-item active"><i class="fas fa-play-circle"></i><span>Simulation</span></div>
+      <a href="index.html" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+    </nav>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <h1><i class="fas fa-satellite-dish"></i> Live Agent Simulation</h1>
+      <div class="sim-controls">
+        <button type="button" class="btn btn-primary" id="btnRun" onclick="toggleSimulation()">
+          <i class="fas fa-play"></i> Start
+        </button>
+        <select class="speed-select" id="speedSelect" onchange="setSpeed(this.value)">
+          <option value="1">1x</option>
+          <option value="2" selected>2x</option>
+          <option value="3">3x</option>
+        </select>
+        <a href="index.html" class="btn btn-ghost"><i class="fas fa-external-link-alt"></i> Back to Dashboard</a>
+      </div>
+    </header>
+    <div class="content">
+      <div class="stats-strip">
+        <div class="stat-box"><div class="value cyan" id="statRequests">0</div><div class="label">Requests/s</div></div>
+        <div class="stat-box"><div class="value" id="statCpu">—</div><div class="label">Avg CPU %</div></div>
+        <div class="stat-box"><div class="value green" id="statScaleUp">0</div><div class="label">Scale Up</div></div>
+        <div class="stat-box"><div class="value amber" id="statScaleDown">0</div><div class="label">Scale Down</div></div>
+        <div class="stat-box"><div class="value" id="statMaintain">0</div><div class="label">Maintain</div></div>
+        <div class="stat-box"><div class="value rose" id="statActive">0</div><div class="label">Active Agents</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-project-diagram"></i> Cloud Infrastructure Network</div>
+        </div>
+        <div class="card-body network-wrap">
+          <canvas id="networkCanvas"></canvas>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-server"></i> Instance CPU (live)</div>
+          </div>
+          <div class="card-body servers-wrap" id="serversWrap"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fas fa-chart-area"></i> Request rate (req/s)</div>
+          </div>
+        <div class="card-body traffic-wrap">
+          <span class="y-label">Req/s</span>
+          <canvas id="trafficCanvas"></canvas>
+        </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-stream"></i> Agent Pipeline</div>
+          <span style="font-size: 12px; color: #94a3b8;" id="pipelineStatus">Idle</span>
+        </div>
+        <div class="card-body pipeline-wrap">
+          <div class="pipeline-track" id="pipelineTrack">
+            <div class="pipeline-agent" data-agent="monitoring" title="Monitoring"><i class="fas fa-eye"></i><span class="name">Monitor</span></div>
+            <div class="pipeline-agent" data-agent="analysis" title="Analysis"><i class="fas fa-chart-bar"></i><span class="name">Analysis</span></div>
+            <div class="pipeline-agent" data-agent="prediction" title="Prediction"><i class="fas fa-crystal-ball"></i><span class="name">Predict</span></div>
+            <div class="pipeline-agent" data-agent="performance" title="Performance"><i class="fas fa-tachometer-alt"></i><span class="name">Perf</span></div>
+            <div class="pipeline-agent" data-agent="cost" title="Cost"><i class="fas fa-coins"></i><span class="name">Cost</span></div>
+            <div class="pipeline-agent" data-agent="decision" title="Decision"><i class="fas fa-gavel"></i><span class="name">Decision</span></div>
+          </div>
+          <div class="pipeline-output" id="pipelineOutput"><span class="agent-name">—</span> Waiting for run...</div>
+          <div class="agent-log-wrap" id="agentLog"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="simulation.js"></script>
+</body>
+</html>

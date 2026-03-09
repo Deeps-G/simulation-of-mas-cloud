@@ -4,7 +4,8 @@
   let cpuChart;
   let donutChart;
 
-  const API_BASE = 'http://127.0.0.1:8000';
+  // const API_BASE = 'http://127.0.0.1:8000';
+  const API_BASE = "http://localhost:8000";
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
 
   function runSystem() {
@@ -13,7 +14,9 @@
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running...';
     }
-    fetch(`${API_BASE}/run-system`)
+    fetch(`${API_BASE}/run-system`, {
+      method: "GET"
+    })
       .then((res) => res.json())
       .then((data) => {
         updateStats(data);
@@ -50,6 +53,7 @@
     setText('scaleDown', data.scale_down);
     setText('maintain', data.maintain);
   }
+
 
   function setText(id, value) {
     const el = document.getElementById(id);
@@ -248,6 +252,7 @@
       initDonutPlaceholder();
       initNav();
       initChartPeriod();
+      startStream();   // start websocket
     });
   } else {
     updateCPUChart();
@@ -259,3 +264,52 @@
   window.runSystem = runSystem;
   window.openSimulation = openSimulation;
 })();
+function animateAgents() {
+
+  const agents = document.querySelectorAll(".pipeline .agent");
+
+  let i = 0;
+
+  const interval = setInterval(() => {
+
+    agents.forEach(a => a.classList.remove("active"));
+
+    agents[i].classList.add("active");
+
+    i++;
+
+    if (i >= agents.length) {
+      clearInterval(interval);
+    }
+
+  }, 400);
+
+}
+document.addEventListener("DOMContentLoaded", () => {
+  startStream();
+});
+function startStream() {
+
+  const socket = new WebSocket("ws://127.0.0.1:8000/stream");
+
+  socket.onopen = () => {
+    console.log("WebSocket connected");
+  };
+
+  socket.onmessage = (event) => {
+
+    const data = JSON.parse(event.data);
+
+    console.log("Stream data:", data);
+
+    animateAgents();
+
+    updateStats(data);
+    updateProgressBars(data);
+    updateDonutChart(data);
+    updateKPI(data);
+    updateAssetTags(data);
+
+  };
+
+}

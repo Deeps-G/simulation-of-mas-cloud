@@ -1,5 +1,9 @@
 import numpy as np
 
+from ml.features import FeatureConfig, build_feature_frame, row_to_feature_vector
+from ml.models import ensure_models, load_models
+from ml.rl import ensure_q_table, load_q_table, choose_action
+
 
 # Monitoring Agent
 def monitoring_agent(row):
@@ -25,14 +29,23 @@ def analysis_agent(metrics):
 # Prediction Agent
 def prediction_agent(df, current_index):
 
-    if current_index >= 5:
-        recent_cpu = df["cpu_usage"].iloc[current_index-5:current_index]
-        predicted_cpu = np.mean(recent_cpu)
-
-    else:
-        predicted_cpu = df["cpu_usage"].iloc[current_index]
-
+    # ML forecaster (RandomForestRegressor) with lookback features.
+    ensure_models(df)
+    models = load_models()
+    feats = build_feature_frame(df, models.cfg)
+    X = row_to_feature_vector(feats, models.cpu_feature_cols, current_index)
+    predicted_cpu = float(models.cpu.predict(X)[0])
     return round(predicted_cpu, 2)
+
+
+def anomaly_score(df, current_index):
+    ensure_models(df)
+    models = load_models()
+    feats = build_feature_frame(df, models.cfg)
+    anom_frame = feats[models.anom_cols].astype(float).fillna(0.0)
+    # IsolationForest: higher (less negative) is more normal. We'll return a normalized-ish score.
+    score = float(models.anomaly.decision_function(anom_frame.iloc[[current_index]])[0])
+    return score
 
 
 # Cost Agent
@@ -63,6 +76,23 @@ def decision_agent(perf_suggestion, cost_suggestion):
         return perf_suggestion
 
     return round((perf_suggestion + cost_suggestion) / 2)
+
+
+def decision_agent_ml(df, current_index):
+    ensure_models(df)
+    models = load_models()
+    feats = build_feature_frame(df, models.cfg)
+    X = row_to_feature_vector(feats, models.decision_feature_cols, current_index)
+    label = str(models.decision.predict(X)[0])
+    return label
+
+
+def decision_agent_rl(df, current_index):
+    ensure_q_table(df)
+    q = load_q_table()
+    row = df.iloc[current_index]
+    delta = int(choose_action(row, q))
+    return delta
 
 
 # Reporting Agent

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from controller import run_system
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Query
 
 app = FastAPI()
 
@@ -14,8 +15,8 @@ app.add_middleware(
 )
 
 @app.get("/run-system")
-def run():
+def run(mode: str = Query(default="ml", pattern="^(ml|rl|heuristic)$")):
 
-    result = run_system()
+    result = run_system(mode=mode)
 
     return result

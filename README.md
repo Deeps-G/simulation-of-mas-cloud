@@ -18,9 +18,11 @@ Modern cloud systems face two major challenges:
 AutoScale AI solves this by using AI agents and predictive models to make intelligent scaling decisions in real time.
 
 The platform monitors infrastructure metrics, predicts future CPU demand, detects anomalies, and automatically determines whether to:
-Scale Up
-Scale Down
-Maintain Current Capacity
+-Scale Up
+
+-Scale Down
+
+-Maintain Current Capacity
 
 ## 🧠 System Architecture
 The project follows a Multi-Agent System architecture, where each agent performs a specific task in the decision pipeline.
@@ -42,19 +44,24 @@ Each agent processes information and passes insights to the next stage before th
 1️⃣ CPU Forecasting Model
 
 A Random Forest Regressor predicts future CPU load based on historical metrics.
+
 Purpose: Predict upcoming workload spikes.
 
 2️⃣ Anomaly Detection
 
 An Isolation Forest model detects abnormal workload patterns.
+
 Purpose: Identify unusual system behavior or traffic spikes
 
 3️⃣ Decision Model
 
 Combines predictions and anomaly scores to determine the optimal scaling action.
 Possible actions:
+
 Scale Up
+
 Scale Down
+
 Maintain
 
 ## 📊 Dashboard Features
@@ -70,9 +77,13 @@ The interactive dashboard visualizes real-time system behavior.
 Displays:
 
 Predicted CPU load
+
 Anomaly score
+
 AI scaling decision
+
 Active Instances
+
 Shows currently active cloud virtual machines.
 
 Example:
@@ -84,7 +95,9 @@ The dashboard uses WebSockets to stream live data from the backend.
 
 Benefits:
 Real-time updates
+
 No page refresh required
+
 Continuous AI decision pipeline
 
 ## 🖥 Simulation Environment

@@ -2,7 +2,7 @@
 # 🚀 AutoScale AI – Intelligent Cloud Auto-Scaling with Multi-Agent Systems
 
 🌐 Live Demo:
-[![Live Demo](https://img.shields.io/badge/Live-Demo-blue)](https://autoscaleai.netlify.app/) or visit- 🚀 https://autoscaleai.netlify.app/
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue)](https://autoscaleai.netlify.app/)  or visit- 🚀 https://autoscaleai.netlify.app/
 
 AutoScale AI is an AI-driven cloud infrastructure simulation platform that demonstrates how Multi-Agent Systems (MAS) and Machine Learning can automatically monitor workloads, predict future resource demand, and dynamically scale infrastructure.
 
@@ -56,7 +56,9 @@ Purpose: Identify unusual system behavior or traffic spikes
 3️⃣ Decision Model
 
 Combines predictions and anomaly scores to determine the optimal scaling action.
+
 Possible actions:
+
 
 Scale Up
 
@@ -74,6 +76,7 @@ The interactive dashboard visualizes real-time system behavior.
 • Resource utilization
 
 ## AI Insights
+
 Displays:
 
 Predicted CPU load
@@ -113,17 +116,27 @@ This helps demonstrate how AI agents respond to changing workloads.
 # ⚙️ Tech Stack
 ## Frontend
 HTML
+
 CSS
+
 JavaScript
+
 Chart.js
+
 WebSockets
+
 ## Backend
 Python
+
 FastAPI
+
 ## Machine Learning
 Scikit-learn
+
 Random Forest Regressor
+
 Isolation Forest
+
 ## Deployment
 Netlify (Frontend)
 
@@ -151,14 +164,20 @@ simulation-of-mas-cloud
 
 ## 🚀 How to Run Locally
 1️⃣ Clone the repository
+
 git clone https://github.com/your-username/simulation-of-mas-cloud.git
+
 cd simulation-of-mas-cloud
+
 2️⃣ Install dependencies
 pip install -r requirements.txt
+
 3️⃣ Start backend server
 python main.py
+
 4️⃣ Run frontend
 cd frontend
+
 python -m http.server 3000
 
 Open in browser:
@@ -175,7 +194,9 @@ http://localhost:3000
 
 ## Result:
 Scale Up
+
 Scale Down
+
 Maintain
 
 ## 🔮 Future Improvements

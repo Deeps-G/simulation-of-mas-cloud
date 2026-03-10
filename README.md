@@ -35,14 +35,7 @@ The project follows a Multi-Agent System architecture, where each agent performs
                                                    Cost Agent
                                                        ↓
                                                   Decision Agent
-                                                  ```mermaid
-graph TD
-A[Monitoring Agent] --> B[Analysis Agent]
-B --> C[Prediction Agent]
-C --> D[Performance Agent]
-D --> E[Cost Agent]
-E --> F[Decision Agent]
-F --> G[Scale Up / Down / Maintain]
+                                             
 Each agent processes information and passes insights to the next stage before the final scaling decision is made.
 
 # 🤖 AI / Machine Learning Components

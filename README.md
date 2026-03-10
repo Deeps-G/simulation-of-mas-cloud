@@ -38,17 +38,17 @@ The project follows a Multi-Agent System architecture, where each agent performs
 Each agent processes information and passes insights to the next stage before the final scaling decision is made.
 
 # 🤖 AI / Machine Learning Components
-# 1️⃣ CPU Forecasting Model
+1️⃣ CPU Forecasting Model
 
 A Random Forest Regressor predicts future CPU load based on historical metrics.
 Purpose: Predict upcoming workload spikes.
 
-# 2️⃣ Anomaly Detection
+2️⃣ Anomaly Detection
 
 An Isolation Forest model detects abnormal workload patterns.
 Purpose: Identify unusual system behavior or traffic spikes
 
-# 3️⃣ Decision Model
+3️⃣ Decision Model
 
 Combines predictions and anomaly scores to determine the optimal scaling action.
 Possible actions:
@@ -175,9 +175,7 @@ Possible enhancements:
 • Multi-cloud orchestration
 
 👩‍💻 Author
-
-Deepanshi
-
+Deepanshi Goyal
 AI / ML Enthusiast | Engineering Student
 
 ⭐ If you like this project💌

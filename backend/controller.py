@@ -69,10 +69,10 @@ def run_system(mode: str = "ml"):
     n = len(window)
 
     return {
-        "scale_up": scale_up,
-        "scale_down": scale_down,
-        "maintain": maintain,
-        "mode": mode,
-        "avg_predicted_cpu": round(total_cpu / n, 2),
-        "anomaly_events": anomaly_hits
-    }
+    "scale_up": scale_up,
+    "scale_down": scale_down,
+    "maintain": maintain,
+    "mode": mode,
+    "predicted_cpu": round(predicted_cpu, 2),
+    "anomaly": anom
+}

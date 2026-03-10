@@ -4,8 +4,8 @@
   let cpuChart;
   let donutChart;
 
-  // const API_BASE = 'http://127.0.0.1:8000';
-  const API_BASE = "http://localhost:8000";
+  const API_BASE = 'http://127.0.0.1:8000';
+  // const API_BASE = "http://localhost:8000";
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
 
   function runSystem() {
@@ -26,8 +26,10 @@
         updateAssetTags(data);
         generateAgentLogs(data);
         updateAgentMessageList(data);
-        updateCPUChart();
+        updateCPUChart(data.predicted_cpu);  // ✅ FIX
         flashUpdatedCards();
+        updateAI(data);
+        updateServers(data);
       })
       .catch((err) => {
         console.error(err);
@@ -169,41 +171,55 @@
       .join('');
   }
 
-  function updateCPUChart() {
-    const ctx = document.getElementById('cpuChart');
-    if (!ctx) return;
-    const len = 10;
-    const data = Array.from({ length: len }, function () { return Math.round(Math.random() * 60 + 20); });
-    if (cpuChart) cpuChart.destroy();
-    cpuChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: MONTHS.slice(0, len),
-        datasets: [
-          {
-            label: 'CPU Usage %',
-            data: data,
-            borderColor: '#ec4899',
-            backgroundColor: 'rgba(236, 72, 153, 0.15)',
-            fill: true,
-            tension: 0.4
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { intersect: false, mode: 'index' },
-        plugins: {
-          legend: { display: true, position: 'top' }
-        },
-        scales: {
-          y: { min: 0, max: 100, grid: { color: '#f1f5f9' } },
-          x: { grid: { display: false } }
-        }
-      }
-    });
-  }
+  let cpuHistory = [55,60,58,62,64,59];
+
+  function updateCPUChart(predictedCPU){
+
+    const ctx = document.getElementById("cpuChart");
+
+    if(predictedCPU === undefined || predictedCPU === null) return;
+
+    cpuHistory.push(predictedCPU);
+
+    if(cpuHistory.length > 25){
+        cpuHistory.shift();
+    }
+
+    // const labels = cpuHistory.map(() => new Date().toLocaleTimeString());
+    const labels= cpuHistory.map((_,i) => i+1);
+
+    if(!cpuChart){
+
+        cpuChart = new Chart(ctx,{
+            type:"line",
+            data:{
+                labels:labels,
+                datasets:[{
+                    label:"Predicted CPU % (ML)",
+                    data:cpuHistory,
+                    borderColor:"#ec4899",
+                    backgroundColor:"rgba(236,72,153,0.2)",
+                    fill:true,
+                    tension:0.4
+                }]
+            },
+            options:{
+                responsive:true,
+                maintainAspectRatio:false,
+                scales:{
+                    y:{min:0,max:100}
+                }
+            }
+        });
+
+    } else {
+
+        cpuChart.data.labels = labels;
+        cpuChart.data.datasets[0].data = cpuHistory;
+        cpuChart.update();
+
+    }
+}
 
   function openSimulation() {
     window.location.href = 'simulation.html';
@@ -248,68 +264,109 @@
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      updateCPUChart();
       initDonutPlaceholder();
       initNav();
       initChartPeriod();
-      startStream();   // start websocket
+      startStream();
     });
   } else {
-    updateCPUChart();
     initDonutPlaceholder();
     initNav();
     initChartPeriod();
+    startStream();
   }
 
   window.runSystem = runSystem;
   window.openSimulation = openSimulation;
+  function animateAgents() {
+
+    const agents = document.querySelectorAll(".pipeline .agent");
+  
+    let i = 0;
+  
+    const interval = setInterval(() => {
+  
+      agents.forEach(a => a.classList.remove("active"));
+  
+      agents[i].classList.add("active");
+  
+      i++;
+  
+      if (i >= agents.length) {
+        clearInterval(interval);
+      }
+  
+    }, 400);
+  
+  }
+  function startStream() {
+
+    const socket = new WebSocket("ws://127.0.0.1:8000/stream");
+
+    socket.onopen = () => {
+        console.log("WebSocket connected");
+    };
+
+    socket.onmessage = (event) => {
+
+        const data = JSON.parse(event.data);
+
+        console.log("Stream data:", data);
+
+        animateAgents();
+
+        updateStats(data);
+        updateProgressBars(data);
+        updateDonutChart(data);
+        updateKPI(data);
+        updateAssetTags(data);
+        updateAI(data);
+        updateCPUChart(data.predicted_cpu);
+        updateServers(data);
+
+    };
+}
+function updateAI(data) {
+
+  const cpu = document.getElementById("aiCpu");
+  const anomaly = document.getElementById("aiAnomaly");
+  const decision = document.getElementById("aiDecision");
+
+  if(cpu) cpu.textContent = data.predicted_cpu;
+
+  if(anomaly){
+      anomaly.textContent = data.anomaly.toFixed(3);
+      anomaly.style.color = data.anomaly < -0.02 ? "red" : "green";
+  }
+
+  if(decision){
+      if(data.scale_up > 0) decision.textContent = "Scale Up";
+      else if(data.scale_down > 0) decision.textContent = "Scale Down";
+      else decision.textContent = "Maintain";
+  }
+}
+
+function updateServers(data){
+
+  const container = document.getElementById("servers");
+
+  if(!container) return;
+
+  container.innerHTML="";
+
+  const count = 5 + (data.scale_up ? 1 : 0) - (data.scale_down ? 1 : 0);
+
+  for(let i=0;i<count;i++){
+
+      const s=document.createElement("div");
+      s.className="server";
+      s.className="server";
+      if(i > 4) s.style.background="#22c55e"; // newly scaled
+      s.innerText="VM"+(i+1);
+
+      container.appendChild(s);
+  }
+}
+
 })();
-function animateAgents() {
 
-  const agents = document.querySelectorAll(".pipeline .agent");
-
-  let i = 0;
-
-  const interval = setInterval(() => {
-
-    agents.forEach(a => a.classList.remove("active"));
-
-    agents[i].classList.add("active");
-
-    i++;
-
-    if (i >= agents.length) {
-      clearInterval(interval);
-    }
-
-  }, 400);
-
-}
-document.addEventListener("DOMContentLoaded", () => {
-  startStream();
-});
-function startStream() {
-
-  const socket = new WebSocket("ws://127.0.0.1:8000/stream");
-
-  socket.onopen = () => {
-    console.log("WebSocket connected");
-  };
-
-  socket.onmessage = (event) => {
-
-    const data = JSON.parse(event.data);
-
-    console.log("Stream data:", data);
-
-    animateAgents();
-
-    updateStats(data);
-    updateProgressBars(data);
-    updateDonutChart(data);
-    updateKPI(data);
-    updateAssetTags(data);
-
-  };
-
-}

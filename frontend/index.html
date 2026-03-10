@@ -222,7 +222,7 @@
     /* Card grid */
     .grid { display: grid; gap: 24px; }
     .grid-row-1 { grid-template-columns: repeat(3, 1fr) 320px; }
-    .grid-row-2 { grid-template-columns: 1.5fr 1fr 1fr; margin-top: 24px; }
+    .grid-row-2 { grid-template-columns: 1.5fr 1fr 1fr 1fr; margin-top: 24px; }
     .grid-row-3 { grid-template-columns: 1fr 1fr 1fr; margin-top: 24px; }
 
     .card {
@@ -431,6 +431,20 @@
       transform: scale(1.1);
       transition: 0.3s;
 }
+.server-grid{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+
+.server{
+background:#6366f1;
+color:white;
+padding:8px 14px;
+border-radius:6px;
+font-size:12px;
+}
 
     @media (max-width: 1200px) {
       .grid-row-1 { grid-template-columns: 1fr 1fr; }
@@ -593,6 +607,27 @@
         </div>
         <div class="card">
           <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-brain" style="color:#6366f1;"></i>
+              AI Insights
+            </div>
+          </div>
+        
+          <div style="padding:10px 0;font-size:14px">
+        
+            <p><b>Predicted CPU:</b> 
+            <span id="aiCpu">--</span>%</p>
+        
+            <p><b>Anomaly Score:</b> 
+            <span id="aiAnomaly">--</span></p>
+        
+            <p><b>AI Decision:</b> 
+            <span id="aiDecision">--</span></p>
+        
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
             <div class="card-title"><span class="icon icon-msg"><i class="fas fa-comments"></i></span> Agent Decisions</div>
             <a href="#" class="card-link">See all</a>
           </div>
@@ -627,6 +662,16 @@
             <li><div class="msg-avatar" style="background: #ef4444;">S−</div><div class="msg-body"><div class="msg-name">Scale down</div><div class="msg-preview">Reduce capacity</div></div></li>
             <li><div class="msg-avatar" style="background: #3b82f6;">M</div><div class="msg-body"><div class="msg-name">Maintain</div><div class="msg-preview">No change</div></div></li>
           </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-server" style="color:#6366f1;"></i>
+              Active Instances
+            </div>
+          </div>
+        
+          <div id="servers" class="server-grid"></div>
         </div>
         <div class="card">
           <div class="card-header">

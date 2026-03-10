@@ -8,18 +8,6 @@ AutoScale AI is an AI-driven cloud infrastructure simulation platform that demon
 
 The system simulates a real cloud environment where multiple intelligent agents collaborate to optimize system performance and cost.
 
-## Table of Contents
-
-- [Overview](#overview)
-- [System Architecture](#system-architecture)
-- [AI Models Used](#AI-/-Machine-Learning-Components)
-- [Agent Pipeline](#agent-pipeline)
-- [Dashboard Features](#📊Dashboard-Features)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Live Demo](#live-demo)
-- [Future Improvements](#future-improvements)
-
 ## 📌 Project Overview
 
 Modern cloud systems face two major challenges:
@@ -69,16 +57,16 @@ Scale Up
 Scale Down
 Maintain
 
-# 📊 Dashboard Features
+## 📊 Dashboard Features
 The interactive dashboard visualizes real-time system behavior.
 
-# Infrastructure Metrics
+## Infrastructure Metrics
 
 • CPU prediction graph
 • Scaling decisions
 • Resource utilization
 
-# AI Insights
+## AI Insights
 Displays:
 
 Predicted CPU load
@@ -87,11 +75,11 @@ AI scaling decision
 Active Instances
 Shows currently active cloud virtual machines.
 
-# Example:
+Example:
 
 VM1 VM2 VM3 VM4 VM5 VM6
 
-# 🌐 Real-Time Data Streaming
+## 🌐 Real-Time Data Streaming
 The dashboard uses WebSockets to stream live data from the backend.
 
 Benefits:
@@ -99,7 +87,7 @@ Real-time updates
 No page refresh required
 Continuous AI decision pipeline
 
-# 🖥 Simulation Environment
+## 🖥 Simulation Environment
 The project also includes a cloud infrastructure simulation interface that visualizes:
 
 • data center regions
@@ -110,23 +98,23 @@ The project also includes a cloud infrastructure simulation interface that visua
 This helps demonstrate how AI agents respond to changing workloads.
 
 # ⚙️ Tech Stack
-# Frontend
+## Frontend
 HTML
 CSS
 JavaScript
 Chart.js
 WebSockets
-# Backend
+## Backend
 Python
 FastAPI
-# Machine Learning
+## Machine Learning
 Scikit-learn
 Random Forest Regressor
 Isolation Forest
-# Deployment
+## Deployment
 Netlify (Frontend)
 
-# 📂 Project Structure
+## 📂 Project Structure
 simulation-of-mas-cloud
 │
 ├── backend
@@ -148,7 +136,7 @@ simulation-of-mas-cloud
 ├── requirements.txt
 └── README.md
 
-# 🚀 How to Run Locally
+## 🚀 How to Run Locally
 1️⃣ Clone the repository
 git clone https://github.com/your-username/simulation-of-mas-cloud.git
 cd simulation-of-mas-cloud
@@ -163,7 +151,7 @@ python -m http.server 3000
 Open in browser:
 http://localhost:3000
 
-# 📈 Example Workflow
+## 📈 Example Workflow
 
 1️⃣ Monitoring Agent collects system metrics
 2️⃣ Analysis Agent detects workload pattern
@@ -172,12 +160,12 @@ http://localhost:3000
 5️⃣ Cost Agent checks infrastructure cost
 6️⃣ Decision Agent determines scaling action
 
-# Result:
+## Result:
 Scale Up
 Scale Down
 Maintain
 
-# 🔮 Future Improvements
+## 🔮 Future Improvements
 
 Possible enhancements:
 

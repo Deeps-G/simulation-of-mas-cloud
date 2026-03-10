@@ -12,15 +12,15 @@ The system simulates a real cloud environment where multiple intelligent agents 
 
 - [Overview](#overview)
 - [System Architecture](#system-architecture)
-- [AI Models Used](#ai-models-used)
+- [AI Models Used](#AI-/-Machine-Learning-Components)
 - [Agent Pipeline](#agent-pipeline)
-- [Dashboard Features](#dashboard-features)
+- [Dashboard Features](#📊Dashboard-Features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Live Demo](#live-demo)
 - [Future Improvements](#future-improvements)
 
-# 📌 Project Overview
+## 📌 Project Overview
 
 Modern cloud systems face two major challenges:
 
@@ -34,7 +34,7 @@ Scale Up
 Scale Down
 Maintain Current Capacity
 
-# 🧠 System Architecture
+## 🧠 System Architecture
 The project follows a Multi-Agent System architecture, where each agent performs a specific task in the decision pipeline.
                                                 Monitoring Agent
                                                        ↓
@@ -50,7 +50,7 @@ The project follows a Multi-Agent System architecture, where each agent performs
                                              
 Each agent processes information and passes insights to the next stage before the final scaling decision is made.
 
-# 🤖 AI / Machine Learning Components
+## 🤖 AI / Machine Learning Components
 1️⃣ CPU Forecasting Model
 
 A Random Forest Regressor predicts future CPU load based on historical metrics.

@@ -2,11 +2,20 @@
 # 🚀 AutoScale AI – Intelligent Cloud Auto-Scaling with Multi-Agent Systems
 
 🌐 Live Demo:
-[![Live Demo](https://img.shields.io/badge/Live-Demo-blue)](https://autoscaleai.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue)](https://autoscaleai.netlify.app/) or visit- 🚀 https://autoscaleai.netlify.app/
 
 AutoScale AI is an AI-driven cloud infrastructure simulation platform that demonstrates how Multi-Agent Systems (MAS) and Machine Learning can automatically monitor workloads, predict future resource demand, and dynamically scale infrastructure.
 
 The system simulates a real cloud environment where multiple intelligent agents collaborate to optimize system performance and cost.
+
+## Table of Contents
+
+- Overview
+- Architecture
+- Features
+- Tech Stack
+- Installation
+- Demo
 
 # 📌 Project Overview
 

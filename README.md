@@ -10,12 +10,15 @@ The system simulates a real cloud environment where multiple intelligent agents 
 
 ## Table of Contents
 
-- Overview
-- Architecture
-- Features
-- Tech Stack
-- Installation
-- Demo
+- [Overview](#overview)
+- [System Architecture](#system-architecture)
+- [AI Models Used](#ai-models-used)
+- [Agent Pipeline](#agent-pipeline)
+- [Dashboard Features](#dashboard-features)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Live Demo](#live-demo)
+- [Future Improvements](#future-improvements)
 
 # 📌 Project Overview
 
